@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-[#030303] text-slate-200 scroll-smooth selection:bg-indigo-500/30">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Steady | Industrial-Grade Discipline</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght=300;400;500;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        
+        .glass { 
+            background: rgba(255, 255, 255, 0.02); 
+            backdrop-filter: blur(12px); 
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+        }
+        
+        @keyframes float { 
+            0%, 100% { transform: translateY(0); } 
+            50% { transform: translateY(-15px); } 
+        }
+        .float-animation { animation: float 6s ease-in-out infinite; }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in-up { 
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
+        }
+        
+        .delay-100 { animation-delay: 100ms; }
+        .delay-200 { animation-delay: 200ms; }
+
+        .glow-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.4;
+            z-index: -1;
+        }
+        
+        .font-montserrat { font-family: 'Montserrat', sans-serif; }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body id="home" class="relative overflow-x-hidden">
+
+    <div class="glow-orb w-[500px] h-[500px] bg-indigo-900/30 top-[-100px] left-[-100px]"></div>
+    <div class="glow-orb w-[600px] h-[600px] bg-slate-800/30 bottom-[-200px] right-[-100px]"></div>
+
+    <nav class="sticky top-0 z-50 glass border-b border-white/5 py-4 px-8 md:px-16 flex justify-between items-center transition-all duration-500 hover:bg-black/40">
+       <img src="STEADY.PNG" alt="Steady Logo" class="w-auto h-8 object-contain drop-shadow-md font-bold tracking-widest text-white uppercase transition-transform duration-300 hover:scale-102"> 
+       
+       <div class="hidden md:flex items-center space-x-8 text-xs font-montserrat tracking-wider">
+            <a href="#home" class="relative group text-white transition-colors">
+                <span>Home</span>
+                <span class="absolute -bottom-1 left-0 w-full h-[1px] bg-white"></span>
+            </a>
+            <a href="#interface" class="relative group text-slate-400 hover:text-white transition-colors duration-300">
+                <span>Interface</span>
+                <span class="absolute -bottom-1 left-0 w-0 h-[1px] bg-white transition-all duration-300 group-hover:w-full"></span>
+            </a>
+            <a href="#about" class="relative group text-slate-400 hover:text-white transition-colors duration-300">
+                <span>About Us</span>
+                <span class="absolute -bottom-1 left-0 w-0 h-[1px] bg-white transition-all duration-300 group-hover:w-full"></span>
+            </a>
+            <a href="#contact" class="relative group text-slate-400 hover:text-white transition-colors duration-300">
+                <span>Contact Us</span>
+                <span class="absolute -bottom-1 left-0 w-0 h-[1px] bg-white transition-all duration-300 group-hover:w-full"></span>
+            </a>
+       </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-8 md:px-16 py-20 md:py-32 grid md:grid-cols-2 gap-16 md:gap-24 items-center relative z-10">
+        <div class="flex flex-col items-start opacity-0 animate-fade-in-up">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full glass text-xs font-medium text-indigo-300 mb-8 border-indigo-500/20 transition-transform duration-300 hover:scale-105">
+                <span class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
+                v0.5 Beta Now Live
+            </div>
+            <h1 class="text-5xl md:text-7xl font-bold tracking-tighter leading-[1.1] mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-400">
+                Your ultimate <br>buddy for <br>beating lust.
+            </h1>
+            <p class="text-lg bg-transparent md:text-xl text-slate-400 mb-10 leading-relaxed max-w-lg">
+              Meet Steady. A christian-based app made for men who are dealing with lust.  
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+                <a href="#" class="flex items-center justify-center gap-3 bg-white text-black px-8 py-4 rounded-2xl font-bold hover:scale-[1.04] hover:bg-slate-100 hover:shadow-[0_0_30px_rgba(255,255,255,0.25)] transition-all duration-300 active:scale-98">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.04 2.26-.79 3.59-.73 1.56.06 2.85.85 3.67 2.1-3.32 1.83-2.73 6.32.55 7.6-1.04 2.68-2.65 5.56-4.89 3.2zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.02 4.56-3.74 4.25z"/></svg>
+                    iOS | Coming Soon
+                </a>
+                <a href="Steady.apk" download="Steady.apk" class="flex items-center justify-center gap-3 glass text-white px-8 py-4 rounded-2xl font-bold hover:bg-white/10 hover:scale-[1.04] hover:border-white/20 transition-all duration-300 active:scale-98">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.523 15.3414c-.5511 0-1.0022-.4511-1.0022-1.0022 0-.5511.4511-1.0022 1.0022-1.0022.5511 0 1.0022.4511 1.0022 1.0022 0 .5511-.4511 1.0022-1.0022 1.0022zm-11.046 0c-.5511 0-1.0022-.4511-1.0022-1.0022 0-.5511.4511-1.0022 1.0022-1.0022.5511 0 1.0022.4511 1.0022 1.0022 0 .5511-.4511 1.0022-1.0022 1.0022zm11.4045-6.0218l1.0968-1.9023c.092-.1592.0376-.3637-.1215-.4557-.1592-.092-.3637-.0376-.4557.1215l-1.111 1.9268c-1.5831-.7222-3.3514-1.1278-5.2892-1.1278-1.9378 0-3.7061.4056-5.2892 1.1278l-1.111-1.9268c-.092-.1592-.2965-.2135-.4557-.1215-.1591.092-.2135.2965-.1215.4557l1.0968 1.9023C3.0673 11.0772 1.011 14.815 1.011 19.2201h21.978c0-4.4051-2.0563-8.1429-5.1615-9.8995z"/></svg>
+                    Get for Android
+                </a>
+            </div>
+        </div>
+
+        <div class="float-animation relative w-full max-w-md mx-auto opacity-0 animate-fade-in-up delay-100">
+            <img src="RAH.png" alt="Steady App Interface" class="w-full h-auto rounded-[2.5rem] bg-black/50 min-h-[400px] object-cover shadow-[0_30px_60px_rgba(0,0,0,0.8)] transition-transform duration-500 hover:scale-[1.02]">
+        </div>
+    </main>
+
+    <div id="interface" class="w-full max-w-5xl mx-auto px-6 py-24 font-['Montserrat',sans-serif]">
+        
+        <div class="mb-20 space-y-3 text-center">
+            <h2 class="text-xs uppercase tracking-[0.3em] text-zinc-500 font-bold animate-pulse">The interface</h2>
+        </div>
+
+        <div class="relative space-y-24">
+
+            <div class="sticky top-24 w-full min-h-[420px] md:h-[460px] bg-zinc-950 border border-zinc-900 rounded-[2.5rem] shadow-[0_-20px_50px_rgba(0,0,0,0.9)] overflow-hidden group transition-all duration-500 hover:border-zinc-800">
+                <div class="absolute -right-10 -bottom-10 w-96 h-96 rounded-full bg-zinc-900/40 blur-[100px] pointer-events-none transition-transform duration-700 group-hover:scale-110"></div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-12 h-full w-full">
+                    <div class="md:col-span-6 p-8 md:p-14 flex flex-col justify-center space-y-4 z-10">
+                        <div class="flex items-center gap-2">
+                            <span class="text-[10px] font-bold uppercase tracking-widest text-zinc-500 border border-zinc-800 px-3 py-1 rounded-full bg-zinc-900/50">Overview</span>
+                        </div>
+                        <h3 class="text-2xl md:text-3xl font-black text-white tracking-tight leading-tight transition-colors duration-300 group-hover:text-indigo-300">
+                            Here She Is: The Dashboard.
+                        </h3>
+                        <p class="text-zinc-400 text-sm md:text-base leading-relaxed font-medium max-w-sm">
+                          Manage your streaks, access your panic button and view rankings.  
+                        </p>
+                    </div>
+                    
+                    <div class="md:col-span-6 relative rounded-2xl h-64 md:h-full w-full flex items-end justify-center md:justify-end overflow-hidden px-6 md:px-0">
+                        <img 
+                            src="RAH.png" 
+                            alt="The Dashboard Interface" 
+                            class="w-full max-w-[100px] md:max-w-none h-[50%] md:h-[95%] object-contain object-bottom transition-transform duration-700 ease-out group-hover:scale-[1.05] group-hover:translate-y-[-5px]"
+                            loading="lazy"
+                        >
+                    </div>
+                </div>
+            </div>
+
+            <div class="sticky top-28 w-full min-h-[420px] md:h-[460px] bg-zinc-950 border border-zinc-900 rounded-[2.5rem] shadow-[0_-20px_50px_rgba(0,0,0,0.9)] overflow-hidden group transition-all duration-500 hover:border-zinc-800">
+                <div class="absolute -right-10 -bottom-10 w-96 h-96 rounded-full bg-zinc-900/40 blur-[100px] pointer-events-none transition-transform duration-700 group-hover:scale-110"></div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-12 h-full w-full">
+                    <div class="md:col-span-6 p-8 md:p-14 flex flex-col justify-center space-y-4 z-10">
+                        <div class="flex items-center gap-2">
+                            <span class="text-[10px] font-bold uppercase tracking-widest text-zinc-500 border border-zinc-800 px-3 py-1 rounded-full bg-zinc-900/50">Community</span>
+                        </div>
+                        <h3 class="text-2xl md:text-3xl font-black text-white tracking-tight leading-tight transition-colors duration-300 group-hover:text-indigo-300">
+                            Your Not Alone
+                        </h3>
+                        <p class="text-zinc-400 text-sm md:text-base leading-relaxed font-medium max-w-sm">
+                          Join a community who are also trying their best to end lust in their lives. Just like you.  
+                        </p>
+                    </div>
+                    
+                    <div class="md:col-span-6 rounded-2xl relative h-64 md:h-full w-full flex items-end justify-center md:justify-end overflow-hidden px-6 md:px-0">
+                        <img 
+                            src="img3.png" 
+                            alt="Community Network View" 
+                            class="w-full max-w-[440px] md:max-w-none h-[90%] md:h-[95%] object-contain object-bottom transition-all duration-700 ease-out group-hover:scale-[1.05] group-hover:opacity-90 group-hover:saturate-100 opacity-70 filter saturate-50"
+                            loading="lazy"
+                        >
+                    </div>
+                </div>
+            </div>
+
+            <div class="sticky top-32 w-full min-h-[420px] md:h-[460px] bg-zinc-950 border border-zinc-900 rounded-[2.5rem] shadow-[0_-20px_50px_rgba(0,0,0,0.9)] overflow-hidden group transition-all duration-500 hover:border-zinc-800">
+                <div class="absolute -right-10 -bottom-10 w-96 h-96 rounded-full bg-zinc-900/40 blur-[100px] pointer-events-none transition-transform duration-700 group-hover:scale-110"></div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-12 h-full w-full">
+                    <div class="md:col-span-6 p-8 md:p-14 flex flex-col justify-center space-y-4 z-10">
+                        <div class="flex items-center gap-2">
+                            <span class="text-[10px] font-bold uppercase tracking-widest text-zinc-500 border border-zinc-800 px-3 py-1 rounded-full bg-zinc-900/50">Timeline</span>
+                        </div>
+                        <h3 class="text-2xl md:text-3xl font-black text-white tracking-tight leading-tight transition-colors duration-300 group-hover:text-indigo-300">
+                            See where it all started. Anytime.
+                        </h3>
+                        <p class="text-zinc-400 text-sm md:text-base leading-relaxed font-medium max-w-sm">
+                          Look back and reflect on day 1 and how you grew after those days.   
+                        </p>
+                    </div>
+                    
+                    <div class="md:col-span-6 relative rounded-2xl h-64 md:h-full w-full flex items-end justify-end-20 md:justify-end overflow-hidden px-6 md:px-0">
+                        <img 
+                            src="img4.PNG" 
+                            alt="Timeline History View" 
+                            class="w-full h-full object-contain object-bottom transition-transform duration-700 ease-out group-hover:scale-[1.03] group-hover:translate-x-[-5px]"
+                            loading="lazy"
+                        >
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="about" class="max-w-4xl mx-auto px-6 space-y-32 py-24">
+        <section class="text-center font-montserrat">
+            <h2 class="text-3xl md:text-5xl font-black tracking-tight leading-tight max-w-xl mx-auto text-white">
+                1 in <span class="text-purple-500 animate-pulse">3</span> men deal with lust.
+            </h2>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-zinc-950/40 border border-zinc-900 rounded-3xl p-8 shadow-sm group hover:border-zinc-700 transition-all duration-300 hover:translate-y-[-4px]">
+                <div class="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 mb-6 font-bold text-sm transition-transform duration-300 group-hover:scale-110">✓</div>
+                <h3 class="font-montserrat text-lg font-bold text-white mb-2">Free Forever</h3>
+                <p class="text-sm text-slate-400 leading-relaxed font-medium">
+                    No premium and subscriptions locking parts of the apps away from users.
+                </p>
+            </div>
+            <div class="bg-zinc-950/40 border border-zinc-900 rounded-3xl p-8 shadow-sm group hover:border-zinc-700 transition-all duration-300 hover:translate-y-[-4px]">
+                <div class="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 mb-6 font-bold text-sm transition-transform duration-300 group-hover:scale-110">✕</div>
+                <h3 class="font-montserrat text-lg font-bold text-white mb-2">No Ads</h3>
+                <p class="text-sm text-slate-400 leading-relaxed font-medium">
+                    Zero interruption or popups distracting you from fighting the urge.
+                </p>
+            </div>
+        </section>
+
+        <section class="bg-zinc-950/20 border border-zinc-900 rounded-3xl p-8 text-center space-y-3 max-w-2xl mx-auto transition-all duration-500 hover:border-zinc-800">
+            <div class="inline-flex items-center gap-1.5 bg-indigo-500/10 text-indigo-300 px-3 py-1 rounded-full font-mono text-[10px] font-bold uppercase tracking-wider border border-indigo-500/20">
+                <span class="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse"></span>
+                In Development
+            </div>
+            <h3 class="font-montserrat text-xl font-bold text-white">We still have a lot coming.</h3>
+            <p class="text-sm text-slate-400 font-medium max-w-md mx-auto leading-relaxed">
+              We are working on making men deal with lust addictions by working on games, optimizations and more.   
+            </p>
+        </section>
+
+        <section class="bg-zinc-950/30 border border-zinc-900 rounded-3xl p-6 md:p-8 shadow-sm max-w-3xl mx-auto transition-all duration-500 hover:border-zinc-800">
+            <div class="flex flex-col md:flex-row gap-6 items-center md:items-start">
+                <div class="shrink-0">
+                    <div class="w-20 h-20 rounded-full bg-zinc-900 border-2 border-indigo-500/20 flex items-center justify-center overflow-hidden shadow-inner transition-transform duration-500 hover:rotate-6">
+                        <img src="hh.png" class="w-full text-zinc-700">
+                    </div>
+                </div>
+                <div class="space-y-3 text-center md:text-left">
+                    <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 justify-center md:justify-start">
+                        <h3 class="font-montserrat text-lg font-bold text-white">About the Founder</h3>
+                    </div>
+                    <p class="text-sm text-slate-400 font-medium leading-relaxed">
+                       I spent years losing hours of focus, motivation and clarity. Once I ended, I started brainstorming. I wanted to build something that didnt exist. A free, forever app that helped men my age and older deal with porn. To help people snap out of their urges. To remind you daily, your not fighting this alone.  
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="text-center py-12 space-y-6 font-montserrat">
+            <div class="space-y-2">
+                <h2 class="text-2xl md:text-4xl font-black tracking-tight text-white">Redeem Yourself.</h2>
+            </div>
+            <div class="flex flex-wrap items-center justify-center gap-4 pt-2">
+                <a href="#" class="flex items-center gap-3 bg-zinc-900 hover:bg-black text-white px-6 py-3 rounded-2xl border border-zinc-800 transition-all shadow-sm hover:scale-105 active:scale-98">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 4.17c.66-.81 1.11-1.93.99-3.06-1 .04-2.21.67-2.93 1.49-.62.69-1.16 1.84-1.01 2.96 1.12.09 2.27-.58 2.95-1.39z"/>
+                    </svg>
+                    <div class="text-left">
+                        <p class="text-[9px] font-medium opacity-60 font-sans tracking-normal lowercase first-letter:uppercase">(Coming Soon) Download For</p>
+                        <p class="text-xs font-bold tracking-tight -mt-0.5">IOS</p>
+                    </div>
+                </a>
+                <a href="#" class="flex items-center gap-3 bg-zinc-900 hover:bg-black text-white px-6 py-3 rounded-2xl border border-zinc-800 transition-all shadow-sm hover:scale-105 active:scale-98">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.523 15.3414c-.5511 0-1.0022-.4511-1.0022-1.0022 0-.5511.4511-1.0022 1.0022-1.0022.5511 0 1.0022.4511 1.0022 1.0022 0 .5511-.4511 1.0022-1.0022 1.0022zm-11.046 0c-.5511 0-1.0022-.4511-1.0022-1.0022 0-.5511.4511-1.0022 1.0022-1.0022.5511 0 1.0022.4511 1.0022 1.0022 0 .5511-.4511 1.0022-1.0022 1.0022zm11.4045-6.0218l1.0968-1.9023c.092-.1592.0376-.3637-.1215-.4557-.1592-.092-.3637-.0376-.4557.1215l-1.111 1.9268c-1.5831-.7222-3.3514-1.1278-5.2892-1.1278-1.9378 0-3.7061.4056-5.2892 1.1278l-1.111-1.9268c-.092-.1592-.2965-.2135-.4557-.1215-.1591.092-.2135.2965-.1215.4557l1.0968 1.9023C3.0673 11.0772 1.011 14.815 1.011 19.2201h21.978c0-4.4051-2.0563-8.1429-5.1615-9.8995z"/></svg>
+
+                    </svg>
+                    <div class="text-left">
+                        <p class="text-[9px] font-medium opacity-60 font-sans tracking-normal uppercase">Download for</p>
+                        <p class="text-xs font-bold tracking-tight -mt-0.5">Android</p>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <section id="contact" class="bg-zinc-950/40 border border-zinc-900 rounded-[2.5rem] p-8 md:p-14 shadow-sm max-w-xl mx-auto transition-all duration-500 hover:border-zinc-800 relative z-10 font-montserrat flex items-center justify-between">
+            <div>
+                <h3 class="text-xl md:text-2xl font-black text-white tracking-tight mb-2">Need Support?</h3>
+                <p class="text-zinc-400 text-sm font-sans font-medium">Reach out directly.</p>
+            </div>
+            <div class="flex items-center gap-3 bg-zinc-900/50 border border-zinc-800 px-4 py-3 rounded-2xl">
+                <span class="text-indigo-400 font-bold text-xs uppercase tracking-widest">Discord</span>
+                <span class="text-white font-mono text-sm tracking-tight font-bold">yeahitsd1prezz</span>
+            </div>
+        </section>
+    </div>
+
+    <footer class="border-t text-purple-700 border-white/5 bg-black/40 backdrop-blur-md py-6 text-center text-[10px] tracking-[0.2em] uppercase font-bold text-slate-600 relative z-10">
+        Hosted on Vertos Hosting <span class="mx-2 text-white/20">|</span> 2026 Segway Softwares
+    </footer>
+
+</body>
+</html>
