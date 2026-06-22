@@ -5,78 +5,615 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Steady | Industrial-Grade Discipline</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&family=Montserrat:wght@400;500;700;900&display=swap');
-        
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #030303; }
-        ::-webkit-scrollbar-thumb { background: #222; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #333; }
-
-        body { font-family: 'Inter', sans-serif; cursor: none; }
-        
-        /* Smooth Custom Cursor */
-        #cursor {
-            position: fixed; top: 0; left: 0; width: 12px; height: 12px;
-            background: #6366f1; border-radius: 50%; pointer-events: none;
-            z-index: 9999; transition: transform 0.1s ease;
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        montserrat: ['Montserrat', 'sans-serif'],
+                    },
+                   
+                    animation: {
+                        'spin-slow': 'spin 8s linear infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'float-delayed': 'float 6s ease-in-out 3s infinite',
+                        'pulse-glow': 'pulse-glow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        'pulse-glow': {
+                            '0%, 100%': { opacity: 0.4, transform: 'scale(1)' },
+                            '50%': { opacity: 0.8, transform: 'scale(1.05)' },
+                        }
+                    }
+                }
+            }
         }
-
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); }
-        .float-animation { animation: float 6s ease-in-out infinite; }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+    </script>
+    <style>
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #030303;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1f1f1f;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #333;
+        }
+        body {
+            cursor: none;
+            overflow-x: hidden;
+            background-color: #000000
+        }
+        .noise-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 50;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+        #cursor-dot {
+            width: 8px;
+            height: 8px;
+            background-color: white;
+            border-radius: 50%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+        }
+        #cursor-ring {
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 9998;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, border-color 0.2s, background-color 0.2s;
+        }
+        .magnetic-wrap {
+            display: inline-block;
+            position: relative;
+        }
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform, opacity;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .glass-panel {
+            background: rgba(10, 10, 10, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+        .hover-glow {
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .hover-glow:hover {
+            border-color: rgba(99, 102, 241, 0.4);
+            box-shadow: 0 0 40px rgba(99, 102, 241, 0.1);
+            transform: translateY(-5px);
+        }
+        .text-gradient {
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-image: linear-gradient(180deg, #ffffff 0%, #a1a1aa 100%);
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 1px;
+            bottom: -4px;
+            left: 0;
+            background-color: white;
+            transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        .parallax-img {
+            will-change: transform;
+            transition: transform 0.1s linear;
+        }
     </style>
 </head>
-<body class="overflow-x-hidden">
+<body id="home" class="relative bg-black">
 
-    <!-- Custom Cursor Element -->
-    <div id="cursor" class="hidden md:block"></div>
+    <div class="noise-overlay"></div>
+    <div id="cursor-dot" class="hidden md:block"></div>
+    <div id="cursor-ring" class="hidden md:block"></div>
 
-    <nav class="sticky top-0 z-50 glass border-b border-white/5 py-6 px-8 md:px-16 flex justify-between items-center">
-        <div class="text-2xl font-black tracking-tighter text-white">STEADY</div>
-        <div class="hidden md:flex gap-8 text-xs font-bold uppercase tracking-widest text-slate-400">
-            <a href="#home" class="hover:text-white transition">Home</a>
-            <a href="#interface" class="hover:text-white transition">Interface</a>
-            <a href="#about" class="hover:text-white transition">About</a>
+    <div class="fixed top-[-20%] left-[-10%] w-[50vw] h-[50vw] rounded-full  pointer-events-none z-0"></div>
+    <div class="fixed bottom-[-20%] right-[-10%] w-[40vw] h-[40vw] rounded-full pointer-events-none z-0"></div>
+
+    <nav class="fixed top-0 left-0 w-full z-50 transition-all duration-500" id="navbar">
+        <div class="glass-panel mx-auto mt-4 max-w-7xl rounded-2xl px-6 py-4 flex justify-between items-center w-[95%]">
+            <a href="#home" class="relative z-10 hover-trigger text-white font-montserrat font-black tracking-widest text-xl uppercase flex items-center gap-3">
+                <img src="STEADY.PNG" class="w-auto h-7 rounded-lg flex items-center justify-center">
+
+                
+            </a>
+            
+            <div class="hidden md:flex items-center space-x-10 text-xs font-montserrat tracking-widest uppercase font-bold text-slate-400">
+                <a href="#home" class="nav-link relative hover-trigger text-white transition-colors">Home</a>
+                <a href="#interface" class="nav-link relative hover-trigger hover:text-white transition-colors">Interface</a>
+                <a href="#about" class="nav-link relative hover-trigger hover:text-white transition-colors">About Us</a>
+                <a href="#contact" class="nav-link relative hover-trigger hover:text-white transition-colors">Contact</a>
+            </div>
+
+            <div class="hidden md:block magnetic-wrap">
+                <a href="https://github.com/d1prezz/Steady-Landing-Page/releases/tag/0.5" class="hover-trigger bg-white text-black px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-wider hover:bg-slate-200 transition-all duration-300 flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                    </svg>
+                    Download
+                </a>
+            </div>
+
+            <button class="md:hidden text-white w-10 h-10 flex flex-col justify-center items-center gap-1.5 z-50">
+                <span class="w-6 h-0.5 bg-white block transition-all"></span>
+                <span class="w-6 h-0.5 bg-white block transition-all"></span>
+                <span class="w-6 h-0.5 bg-white block transition-all"></span>
+            </button>
         </div>
     </nav>
 
-    <main class="max-w-7xl mx-auto px-8 py-20 md:py-32 grid md:grid-cols-2 gap-16 items-center">
-        <div>
-            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-500/10 text-indigo-400 text-xs font-bold border border-indigo-500/20 mb-6">
-                <span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span></span>
-                v0.5 BETA NOW LIVE
+<main class="relative z-10 pt-32 pb-32 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6 md:px-16 grid lg:grid-cols-12 gap-16 items-center">
+            
+            <div class="lg:col-span-7 flex flex-col items-start reveal">
+                
+                <!-- Added -mt-6 here to pull it up slightly -->
+                <h1 class="-mt-6 text-6xl sm:text-7xl lg:text-8xl tracking-tighter leading-[0.95] mb-8 text-gradient font-montserrat">
+                    beat the <br>urge.
+                </h1>
+
+                <p class="text-lg md:text-xl text-slate-400 mb-10 leading-relaxed max-w-xl font-light">
+                    Meet steady. A christian-based app designed for men commited to destroying lust.  
+                </p>
+                
+                <div class="flex flex-col sm:flex-row gap-5 w-full sm:w-auto">
+                    <div class="magnetic-wrap">
+                        <a href="https://github.com/d1prezz/Steady-Landing-Page/releases/tag/0.5" class="hover-trigger w-full sm:w-auto flex items-center justify-center gap-3 bg-white text-black px-8 py-4 rounded-2xl font-bold hover:bg-slate-200 transition-all duration-300">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M17.523 15.3414c-.5511 0-1.0022-.4511-1.0022-1.0022 0-.5511.4511-1.0022 1.0022-1.0022.5511 0 1.0022.4511 1.0022 1.0022 0 .5511-.4511 1.0022-1.0022 1.0022zm-11.046 0c-.5511 0-1.0022-.4511-1.0022-1.0022 0-.5511.4511-1.0022 1.0022-1.0022.5511 0 1.0022.4511 1.0022 1.0022 0 .5511-.4511 1.0022-1.0022 1.0022zm11.4045-6.0218l1.0968-1.9023c.092-.1592.0376-.3637-.1215-.4557-.1592-.092-.3637-.0376-.4557.1215l-1.111 1.9268c-1.5831-.7222-3.3514-1.1278-5.2892-1.1278-1.9378 0-3.7061.4056-5.2892 1.1278l-1.111-1.9268c-.092-.1592-.2965-.2135-.4557-.1215-.1591.092-.2135.2965-.1215.4557l1.0968 1.9023C3.0673 11.0772 1.011 14.815 1.011 19.2201h21.978c0-4.4051-2.0563-8.1429-5.1615-9.8995z"/>
+                            </svg>
+                            Get for Android
+                        </a>
+                    </div>
+                    <div class="magnetic-wrap">
+                        <div class="w-full sm:w-auto flex items-center justify-center gap-3 glass-panel text-slate-500 px-8 py-4 rounded-2xl font-bold border-white/5 cursor-not-allowed">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.04 2.26-.79 3.59-.73 1.56.06 2.85.85 3.67 2.1-3.32 1.83-2.73 6.32.55 7.6-1.04 2.68-2.65 5.56-4.89 3.2zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.02 4.56-3.74 4.25z"/>
+                            </svg>
+                            iOS Soon
+                        </div>
+                    </div>
+                </div>
+                
             </div>
-            <h1 class="text-6xl md:text-8xl font-black tracking-tighter leading-[0.9] mb-8 bg-gradient-to-br from-white to-slate-500 bg-clip-text text-transparent">
-                BEAT THE <br>IMPULSE.
-            </h1>
-            <p class="text-lg text-slate-400 mb-10 leading-relaxed max-w-md">
-                An industrial-grade tool for men committed to breaking free. Built on faith, powered by data, designed for focus.
-            </p>
-            <div class="flex gap-4">
-                <a href="#" class="px-8 py-4 bg-white text-black font-bold rounded-xl hover:bg-slate-200 transition flex items-center gap-2">
-                    <i data-lucide="download" class="w-4 h-4"></i> Get for Android
-                </a>
+            
+            <div class="lg:col-span-5 relative reveal h-[600px] flex items-center justify-center perspective-1000">
+                <div class="absolute inset-0 rounded-full animate-pulse-glow"></div>
+                <div class="relative w-full max-w-[450px] mx-auto animate-float z-10 parallax-container group">
+                    <img src="RAH.png" alt="Steady App Interface" class="w-full h-auto rounded-[2.5rem] shadow-[0_40px_80px_rgba(0,0,0,0.8)] border-steady-dark parallax-img">
+                </div>
             </div>
-        </div>
-        <div class="float-animation relative">
-            <div class="absolute inset-0 bg-indigo-500/20 blur-[120px] rounded-full"></div>
-            <img src="RAH.png" alt="App Preview" class="relative z-10 w-full max-w-sm mx-auto rounded-3xl shadow-2xl border border-white/10">
+
         </div>
     </main>
 
-    <!-- Script for Cursor & Icons -->
+    <div class="w-full border-y border-white/5 bg-steady-dark/50 py-8 overflow-hidden relative z-10 flex whitespace-nowrap">
+        <div class="animate-[marquee_20s_linear_infinite] flex items-center gap-16 text-xs font-montserrat font-bold tracking-[0.3em] uppercase text-slate-600">
+            <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+            <span>No Subscriptions</span>
+            <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+            <span>Zero Ads</span>
+            <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+            <span>Christian Based</span>
+            <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+            <span>Community Driven</span>
+            <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+            <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+            <span>No Subscriptions</span>
+            <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+            <span>Zero Ads</span>
+            <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+            <span>Christian Based</span>
+            <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+            <span>Community Driven</span>
+        </div>
+    </div>
+
+<section id="interface" class="relative z-10 py-32 max-w-7xl mx-auto px-6 md:px-16">
+        <div class="text-center mb-24 reveal">
+            <h2 class="text-4xl md:text-6xl text-white mt-4 font-montserrat tracking-tight">Here she is.</h2>
+        </div>
+
+        <div class="space-y-32">
+            
+            <div class="grid md:grid-cols-12 gap-12 items-center reveal">
+                <div class="md:col-span-5 order-2 md:order-1">
+                    <div class="relative w-full max-w-sm mx-auto">
+                        <div class="absolute inset-0 rounded-full"></div>
+                        <img src="RAH.png" alt="Dashboard" class="relative z-10 w-full h-auto rounded-[2rem] shadow-2xl">
+                    </div>
+                </div>
+                <div class="md:col-span-7 order-1 md:order-2 space-y-6">
+                    <div class="w-14 h-14 rounded-2xl glass-panel flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"></path></svg>
+                    </div>
+                    <h3 class="text-3xl md:text-4xl font-bold text-white font-montserrat">The Dashboard</h3>
+                    <p class="text-lg text-slate-400 leading-relaxed max-w-lg">
+                      Manage your streaks and complete tasks for XP.  
+                    </p>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-12 gap-12 items-center reveal">
+                <div class="md:col-span-7 space-y-6">
+                    <div class="w-14 h-14 rounded-2xl glass-panel flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"></path></svg>
+                    </div>
+                    <h3 class="text-3xl md:text-4xl font-bold text-white font-montserrat">Make it feel rewarding.</h3>
+                    <p class="text-lg text-slate-400 leading-relaxed max-w-lg">
+                      With the marketplace, you can buy streak holds to hold your streak while your away using XP earnt from completing tasks.  
+                    </p>
+                </div>
+                <div class="md:col-span-5">
+                    <div class="relative w-full max-w-sm mx-auto">
+                        <div class="absolute inset-0 rounded-full"></div>
+                        <img src="phone2.PNG" alt="Marketplace" class="relative z-10 w-full h-auto rounded-[2rem] shadow-2xl">
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-12 gap-12 items-center reveal">
+                <div class="md:col-span-5 order-2 md:order-1">
+                    <div class="relative w-full max-w-sm mx-auto">
+                        <div class="absolute inset-0 rounded-full"></div>
+                        <img src="phone3.webp" alt="Panic Button" class="relative z-10 w-full h-auto rounded-[2rem] shadow-2xl">
+                    </div>
+                </div>
+                <div class="md:col-span-7 order-1 md:order-2 space-y-6">
+                    <div class="w-14 h-14 rounded-2xl glass-panel flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"></path></svg>
+                    </div>
+                    <h3 class="text-3xl md:text-4xl font-bold text-white font-montserrat">Not a single second wasted.</h3>
+                    <p class="text-lg text-slate-400 leading-relaxed max-w-lg">
+                      When urges hit, you can target them instantly with a press of a button.   
+                    </p>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-12 gap-12 items-center reveal">
+                <div class="md:col-span-7 space-y-6">
+                    <div class="w-14 h-14 rounded-2xl glass-panel flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"></path></svg>
+                    </div>
+                    <h3 class="text-3xl md:text-4xl font-bold text-white font-montserrat">You Are Not Alone.</h3>
+                    <p class="text-lg text-slate-400 leading-relaxed max-w-lg">
+                      People just like you are dealing with the same issue. Join a community of men targetting lust in their lives.  
+                    </p>
+                </div>
+                <div class="md:col-span-5">
+                    <div class="relative w-full max-w-sm mx-auto">
+                        <div class="absolute inset-0 rounded-full"></div>
+                        <img src="phone3.png" alt="Community" class="relative z-10 w-full h-auto rounded-[2rem] shadow-2xl">
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-12 gap-12 items-center reveal">
+                <div class="md:col-span-5 order-2 md:order-1">
+                    <div class="relative w-full max-w-sm mx-auto">
+                        <div class="absolute inset-0 rounded-full"></div>
+                        <img src="phone4png.PNG" alt="Timeline" class="relative z-10 w-full h-auto rounded-[2rem] shadow-2xl">
+                    </div>
+                </div>
+                <div class="md:col-span-7 order-1 md:order-2 space-y-6">
+                    <div class="w-14 h-14 rounded-2xl glass-panel flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <h3 class="text-3xl md:text-4xl font-bold text-white font-montserrat">The Timeline.</h3>
+                    <p class="text-lg text-slate-400 leading-relaxed max-w-lg">
+                      Reflect on your journey. Look back at Day 1 and view your spiritual and mental timeline of your life.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="funding" class="relative z-10 py-32 max-w-7xl mx-auto px-6 md:px-16 reveal">
+        <div class="glass-panel p-10 md:p-16 rounded-[2.5rem] border border-white/10">
+            <div class="max-w-3xl mb-12">
+                <h2 class="text-4xl md:text-5xl font-bold text-white font-montserrat mb-8">How we keep it free:</h2>
+                
+                <div class="space-y-8">
+                    <div class="flex gap-6">
+                        <div class="shrink-0 w-10 h-10 rounded-full bg-indigo-500/20 flex items-center justify-center text-indigo-400 font-bold">1</div>
+                        <div>
+                            <h4 class="text-xl font-bold text-white mb-2">Non-HTTPS Landing Pages</h4>
+                            <p class="text-slate-400 leading-relaxed">Our landing websites are HTTP. We limit resource consumption by prioritizing our main app for HTTPS.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-6">
+                        <div class="shrink-0 w-10 h-10 rounded-full bg-indigo-500/20 flex items-center justify-center text-indigo-400 font-bold">2</div>
+                        <div>
+                            <h4 class="text-xl font-bold text-white mb-2">Subdomains</h4>
+                            <p class="text-slate-400 leading-relaxed">To keep our costs completely at zero, we utilize subdomains, which removes the management stress of purchasing individual domains.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-6">
+                        <div class="shrink-0 w-10 h-10 rounded-full bg-indigo-500/20 flex items-center justify-center text-indigo-400 font-bold">3</div>
+                        <div>
+                            <h4 class="text-xl font-bold text-white mb-2">Owned Resources</h4>
+                            <p class="text-slate-400 leading-relaxed">We host using our own hardware. Segway Softwares owns Vertos SA, meaning the app is hosted on our own dedicated resources.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            
+
+            <div class="pt-8 border-t border-white/10">
+                <p class="text-slate-400 mb-6 italic">Your help will be greatly appreciated and it will help us grow our app!</p>
+                <a href="#" class="inline-flex items-center gap-3 bg-white text-black px-8 py-4 rounded-2xl font-bold hover:bg-slate-200 transition-all duration-300">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                    Donate to Support
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="notice" class="relative z-10 py-16 max-w-7xl mx-auto px-6 md:px-16 reveal">
+        <div class="bg-amber-500/10 border border-amber-500/20 p-8 md:p-10 rounded-[2rem]">
+            <div class="flex items-start gap-6">
+                <div class="shrink-0 mt-1">
+                    <svg class="w-8 h-8 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-white font-montserrat mb-3">Important Security Notice</h3>
+                    <p class="text-slate-400 leading-relaxed max-w-3xl">
+                        Our app is quite new, therefore it is not verified by Google Play or Play Protect. To limit costs to absolute 0, we do not utilize the Google Play Store for distribution. If any security warnings pop up, please select the option to report that the app is safe to Google; this helps us tremendously in moving toward official certification!
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="relative z-10 py-32 border-y border-white/5">
+        <div class="max-w-5xl mx-auto px-6 md:px-16 text-center reveal">
+            <h2 class="text-4xl md:text-6xl font-black text-white font-montserrat mb-12">
+                1 in <span class="text-indigo-500">3</span> men deal with lust.
+            </h2>
+            
+            <div class="grid md:grid-cols-2 gap-8 mb-20 text-left">
+                <div class="glass-panel p-10 rounded-3xl hover-glow">
+                    <div class="w-12 h-12 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center mb-6">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3 font-montserrat">Free Forever</h3>
+                    <p class="text-slate-400 leading-relaxed">No premium tiers, no subscriptions locking vital recovery tools away from users who need them most. Because beating an addiction should never cost a cent.</p>
+                </div>
+                <div class="glass-panel p-10 rounded-3xl hover-glow">
+                    <div class="w-12 h-12 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center mb-6">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3 font-montserrat">Zero Ads</h3>
+                    <p class="text-slate-400 leading-relaxed">Absolutely no interruptions, pop-ups, or trackers distracting you.</p>
+                </div>
+            </div>
+
+            <div class="glass-panel p-8 md:p-12 rounded-[2.5rem] flex flex-col md:flex-row items-center gap-10 text-left relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-64 h-64 rounded-full pointer-events-none"></div>
+                <div class="shrink-0 relative z-10">
+                    <div class="w-32 h-32 rounded-full border-4 border-indigo-500/20 overflow-hidden shadow-2xl">
+                        <img src="hh.png" alt="Founder" class="w-full h-full object-cover">
+                    </div>
+                </div>
+                <div class="relative z-10">
+                    <h3 class="text-2xl font-bold text-white font-montserrat mb-2">About the Founder</h3>
+                    <p class="text-slate-300 leading-relaxed text-lg font-light">
+                        "I built STEADY to help men deal with lust without having to pay a single cent. I was tired of apps showering you with ads, forcing you to pay premium just to get all the features. I wanted to change that, I wanted an app that would be free for anybody. Beating an addiction should never cost a cent."
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="relative z-10 py-32 max-w-7xl mx-auto px-6 md:px-16 flex flex-col items-center justify-center text-center reveal">
+        <h2 class="text-5xl md:text-7xl font-black text-white font-montserrat mb-6">Redeem Yourself.</h2>
+        <p class="text-xl text-slate-400 mb-12 max-w-2xl font-light">It is time to take back control of your life and your mind.</p>
+        
+        <div class="flex flex-col sm:flex-row gap-6 mb-20">
+            <a href="https://github.com/d1prezz/Steady-Landing-Page/releases/tag/0.5" class="hover-trigger glass-panel hover:bg-white hover:text-black transition-all duration-500 px-10 py-5 rounded-2xl flex items-center gap-4 text-white font-bold group">
+                <svg class="w-8 h-8 group-hover:text-black transition-colors" fill="currentColor" viewBox="0 0 24 24"><path d="M17.523 15.3414c-.5511 0-1.0022-.4511-1.0022-1.0022 0-.5511.4511-1.0022 1.0022-1.0022.5511 0 1.0022.4511 1.0022 1.0022 0 .5511-.4511 1.0022-1.0022 1.0022zm-11.046 0c-.5511 0-1.0022-.4511-1.0022-1.0022 0-.5511.4511-1.0022 1.0022-1.0022.5511 0 1.0022.4511 1.0022 1.0022 0 .5511-.4511 1.0022-1.0022 1.0022zm11.4045-6.0218l1.0968-1.9023c.092-.1592.0376-.3637-.1215-.4557-.1592-.092-.3637-.0376-.4557.1215l-1.111 1.9268c-1.5831-.7222-3.3514-1.1278-5.2892-1.1278-1.9378 0-3.7061.4056-5.2892 1.1278l-1.111-1.9268c-.092-.1592-.2965-.2135-.4557-.1215-.1591.092-.2135.2965-.1215.4557l1.0968 1.9023C3.0673 11.0772 1.011 14.815 1.011 19.2201h21.978c0-4.4051-2.0563-8.1429-5.1615-9.8995z"/></svg>
+                <div class="text-left">
+                    <span class="block text-[10px] uppercase tracking-widest opacity-70 group-hover:opacity-100">Download for</span>
+                    <span class="block text-xl">Android</span>
+                </div>
+            </a>
+        </div>
+
+        <div class="glass-panel w-full max-w-3xl p-8 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-6 hover-glow">
+            <div class="text-left">
+                <h3 class="text-2xl font-bold text-white font-montserrat">Need Support?</h3>
+                <p class="text-slate-400 mt-1">Reach out directly to our discord.</p>
+            </div>
+            <div class="flex items-center gap-4 bg-steady-black border border-white/10 px-6 py-4 rounded-2xl">
+                <svg class="w-6 h-6 text-[#5865F2]" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/></svg>
+                <div class="text-left">
+                    <p class="text-[10px] text-indigo-400 font-bold uppercase tracking-widest">Discord</p>
+                    <p class="text-white font-mono font-bold tracking-tight">discord.gg/9efPpYke22</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="relative z-10 border-t border-white/5 bg-steady-dark/80 backdrop-blur-xl py-10 mt-20">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-left">
+            <div class="flex items-center gap-3">
+                <div class="w-6 h-6 rounded flex items-center justify-center">
+                    
+                </div>
+                <img src="STEADY.PNG" class="w-auto h-7 text-white font-montserrat font-bold tracking-widest uppercase text-sm">
+            </div>
+            <p class="text-xs font-bold tracking-[0.2em] text-slate-500 uppercase">
+                Hosted on Vertos Hosting <span class="mx-3 text-white/20">|</span> 2026 Segway Softwares
+            </p>
+        </div>
+    </footer>
+
+    <style>
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+    </style>
+
     <script>
-        // Cursor Logic
-        const cursor = document.getElementById('cursor');
-        document.addEventListener('mousemove', (e) => {
-            cursor.style.transform = `translate(${e.clientX - 6}px, ${e.clientY - 6}px)`;
+        const dot = document.getElementById('cursor-dot');
+        const ring = document.getElementById('cursor-ring');
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
+        let dotX = window.innerWidth / 2;
+        let dotY = window.innerHeight / 2;
+        let ringX = window.innerWidth / 2;
+        let ringY = window.innerHeight / 2;
+        let isHovering = false;
+
+        window.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
         });
 
-        // Initialize Lucide Icons
-        lucide.createIcons();
+        const hoverTriggers = document.querySelectorAll('.hover-trigger');
+        hoverTriggers.forEach(trigger => {
+            trigger.addEventListener('mouseenter', () => {
+                isHovering = true;
+                dot.style.transform = 'translate(-50%, -50%) scale(0)';
+                ring.style.width = '60px';
+                ring.style.height = '60px';
+                ring.style.borderColor = '#6366f1';
+                ring.style.backgroundColor = 'rgba(99, 102, 241, 0.1)';
+            });
+            trigger.addEventListener('mouseleave', () => {
+                isHovering = false;
+                dot.style.transform = 'translate(-50%, -50%) scale(1)';
+                ring.style.width = '40px';
+                ring.style.height = '40px';
+                ring.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+                ring.style.backgroundColor = 'transparent';
+            });
+        });
+
+        const magnetics = document.querySelectorAll('.magnetic-wrap');
+        magnetics.forEach(wrap => {
+            const el = wrap.children[0];
+            wrap.addEventListener('mousemove', (e) => {
+                const rect = wrap.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                el.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
+            });
+            wrap.addEventListener('mouseleave', () => {
+                el.style.transform = `translate(0px, 0px)`;
+            });
+        });
+
+        function animateCursor() {
+            dotX += (mouseX - dotX) * 0.2;
+            dotY += (mouseY - dotY) * 0.2;
+            ringX += (mouseX - ringX) * 0.1;
+            ringY += (mouseY - ringY) * 0.1;
+            
+            dot.style.left = `${dotX}px`;
+            dot.style.top = `${dotY}px`;
+            ring.style.left = `${ringX}px`;
+            ring.style.top = `${ringY}px`;
+            
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+
+        const reveals = document.querySelectorAll('.reveal');
+        const observerOptions = { root: null, rootMargin: '0px', threshold: 0.15 };
+        
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+        
+        reveals.forEach(reveal => {
+            revealObserver.observe(reveal);
+        });
+
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('bg-steady-black/50', 'backdrop-blur-md');
+                navbar.classList.remove('py-4');
+                navbar.classList.add('py-2');
+            } else {
+                navbar.classList.remove('bg-steady-black/50', 'backdrop-blur-md');
+                navbar.classList.remove('py-2');
+                navbar.classList.add('py-4');
+            }
+        });
+
+        const parallaxContainers = document.querySelectorAll('.parallax-container');
+        parallaxContainers.forEach(container => {
+            const img = container.querySelector('.parallax-img');
+            container.addEventListener('mousemove', (e) => {
+                const rect = container.getBoundingClientRect();
+                const x = (e.clientX - rect.left) / rect.width - 0.5;
+                const y = (e.clientY - rect.top) / rect.height - 0.5;
+                img.style.transform = `perspective(1000px) rotateY(${x * 10}deg) rotateX(${-y * 10}deg) scale3d(1.02, 1.02, 1.02)`;
+            });
+            container.addEventListener('mouseleave', () => {
+                img.style.transform = `perspective(1000px) rotateY(0deg) rotateX(0deg) scale3d(1, 1, 1)`;
+            });
+        });
     </script>
 </body>
 </html>
